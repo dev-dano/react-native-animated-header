@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View,
-  FlatList,
   StyleSheet
 } from 'react-native';
 
+import List from '../../../list';
 import ContactListItem from '../components/contactListItem';
 
 
-export default class contactList extends React.Component {
-  state = {};
+export default class contactList extends Component {
+  //state = {};
   
   _keyExtractor = (item, index) => {
   
@@ -21,14 +21,12 @@ export default class contactList extends React.Component {
    
   render()  {
     return (
-      <View style={styles.container}>
+      <List
+        keyExtractor={this._keyExtractor}
+        renderItem={this._renderItem}>
         // Search bar
-      
-        <FlatList
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-        />
-      </View>
+      </List>
+    
     );   
   }
   
@@ -36,8 +34,5 @@ export default class contactList extends React.Component {
 
 
 const styles = StyleSheet.create({
-  container: {
-    
-  }
-  
+
 });
