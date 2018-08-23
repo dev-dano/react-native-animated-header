@@ -4,7 +4,7 @@ import {
   StyleSheet
 } from 'react-native';
 
-import List from '../../../list';
+import List from '../../../src/list';
 import ContactListItem from '../components/contactListItem';
 
 
