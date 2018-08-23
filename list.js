@@ -15,14 +15,14 @@ export default class list extends React.PureComponent {
       animatedValue: new Animated.Value(0),
       enableSnapAnimation: true
     };
+    
+    // Used to expand/collapse header
+    this._interpolatedValue = this.state.animatedValue.interpolate({
+      inputRange: [0, props.maxHeight],
+      outputRange: [props.minHeight, -props.maxHeight],
+      extrapolate: 'clamp'
+    });
   }
-  
-  // Used to expand/collapse header
-  _interpolatedValue = this.state.animatedValue.interpolate({
-    inputRange: [0, props.maxHeight],
-    outputRange: [props.minHeight, -props.maxHeight],
-    extrapolate: 'clamp'
-  });
 
   
   componentDidMount() {
@@ -39,8 +39,8 @@ export default class list extends React.PureComponent {
   /**
    * Disable snap animation unless content size is big enough to fill screen.
    */ 
-  _verifyContentSize = ({ contentSize, layoutMeasurement: height }) => {
-    const enableSnapAnimation = (contentSize.height > height) ? ture : false;
+  _verifyContentSize = ({ contentSize, layoutMeasurement: { height } }) => {
+    const enableSnapAnimation = (contentSize.height > height) ? true : false;
     this.setState({ enableSnapAnimation });
   };
 
@@ -71,15 +71,14 @@ export default class list extends React.PureComponent {
   _headerSnapAnimation = () => {
     const { minHeight, maxHeight } = this.props;
     
-    if(this._scrollValue > 0 && this._scrollValue < maxHeight) {
-      const toValue = (this._scrollValue < maxHeight/2) ? minHeight : maxHeight;
+    if(this._scrollVal > 0 && this._scrollVal < maxHeight) {
+      const toValue = (this._scrollVal < maxHeight/2) ? minHeight : maxHeight;
 
       this.flatListRef.getScrollResponder().scrollTo({y: toValue});
     }
   };
   
   
-
   render()  {
     const {
       minHeight,
@@ -145,7 +144,9 @@ const styles = StyleSheet.create({
 });
 
 
-list.PropTypes = {
+list.propTypes = {
+  minHeight: PropTypes.number,
+  maxHeight: PropTypes.number,
   containerStyle: PropTypes.any,
   children: PropTypes.element,
 };
