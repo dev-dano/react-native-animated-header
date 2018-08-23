@@ -6,6 +6,7 @@ import {
   StyleSheet
 } from 'react-native';
 import PropTypes from 'prop-types';
+import heightPropType from './customPropTypes/heightPropType';
 
 
 export default class list extends React.PureComponent {
@@ -15,13 +16,6 @@ export default class list extends React.PureComponent {
       animatedValue: new Animated.Value(0),
       enableSnapAnimation: true
     };
-    
-    // Used to expand/collapse header
-    this._interpolatedValue = this.state.animatedValue.interpolate({
-      inputRange: [0, props.maxHeight],
-      outputRange: [props.minHeight, -props.maxHeight],
-      extrapolate: 'clamp'
-    });
   }
 
   
@@ -34,6 +28,13 @@ export default class list extends React.PureComponent {
   componentWillUnmount()  {
     this.state.animatedValue.removeAllListeners();
   }
+  
+  
+  /**
+   * Return a reference for animatedValue.
+   * It can be interpolated and used to animate headers from third party libraries (Ex: react-navigation)
+   */
+  getScrollAnimatedValue = () => this.state.animatedValue;
 
 
   /**
@@ -89,15 +90,30 @@ export default class list extends React.PureComponent {
     } = this.props;
     
     
-    const renderCollapsibleHeader = () => (
-      <Animated.View
-        style={[
-          styles.collapsibleHeader,
-          { transform: [{ translateY: this._interpolatedValue }] }
-        ]}>
-        {children}
-      </Animated.View>
-    );
+    const renderCollapsibleHeader = () => {
+      
+      // If animatedValue has not been interpolated.
+      if (!this._interpolatedValue) {
+        const { minHeight, maxHeight } = this.props;
+        
+        // Used to expand/collapse header
+        this._interpolatedValue = this.state.animatedValue.interpolate({
+          inputRange: [0, maxHeight],
+          outputRange: [minHeight, -maxHeight],
+          extrapolate: 'clamp'
+        });
+      }
+      
+      return (
+        <Animated.View
+          style={[
+            styles.collapsibleHeader,
+            { transform: [{ translateY: this._interpolatedValue }] }
+          ]}>
+          {children}
+        </Animated.View>
+      );
+    }
     
     const renderListHeaderComponent = () => (
       <View style={{ height: maxHeight }} />
@@ -143,12 +159,16 @@ const styles = StyleSheet.create({
   } 
 });
 
-
+/**
+ * children               : optional
+ * minHeight & maxHeight  : required if children passed, otherwise ignored
+ * containerStyle         : optional
+ */
 list.propTypes = {
-  minHeight: PropTypes.number,
-  maxHeight: PropTypes.number,
-  containerStyle: PropTypes.any,
   children: PropTypes.element,
+  minHeight: heightPropType,
+  maxHeight: heightPropType,
+  containerStyle: PropTypes.any,
 };
 
 list.defaultProps = {
