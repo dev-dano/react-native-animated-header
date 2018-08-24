@@ -46,16 +46,13 @@ export default class list extends React.PureComponent {
   };
 
   /**
-   * Disable snap animation unless content size is big enough to fill screen.
+   * onScrollAnimatonEnd is deprecated. Alternative approach to detect animation end point.
    */ 
   _onScrollBeginDrag = ({ nativeEvent }) => {
     this._verifyContentSize(nativeEvent);
     this._clearDelayedAnimation();
   };
-
-  /**
-   * onScrollAnimatonEnd is deprecated. Alternative approach to detect animation end point.
-   */ 
+ 
   _fireDelayedAnimation = () => {
     // 100ms delay provides smooth animation and enough wait time (inMomentumScrollBegin usually fires within 1ms if there is a glide)
     this.scrollAnimationEndTimer = setTimeout(this._headerSnapAnimation, 100);
@@ -94,7 +91,6 @@ export default class list extends React.PureComponent {
       
       // If animatedValue has not been interpolated.
       if (!this._interpolatedValue) {
-        const { minHeight, maxHeight } = this.props;
         
         // Used to expand/collapse header
         this._interpolatedValue = this.state.animatedValue.interpolate({
