@@ -6,7 +6,7 @@ List component allows you to acheive the same effect in hacky but reliable way.
 <img src='https://github.com/dev-dano/react-native-list/blob/master/example/Demo.gif?raw=true' width="25%" height="25%">
 
 ## Example
-1. Passing header component as a prop.
+1. Passing header component as children.
 ```js
 import React from 'react';
 import { ... } from 'react-native';
